@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - API Build
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17 (Phase 1)
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
@@ -40,7 +40,7 @@ jobs:
           TAG=$(git rev-parse --short HEAD)
           IMAGE_PATH=ghcr.io/${{ github.repository }}:$TAG
           
-          # Construire l'image (le Dockerfile est dans './api')
+          # Construire l'image : le Dockerfile est dans './api'
           docker build -t $IMAGE_PATH ./api
           
           # Pousser l'image
