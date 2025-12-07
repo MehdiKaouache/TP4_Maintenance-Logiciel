@@ -6,7 +6,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: todo-app-k8s-lab # Utilise le nom de ton dépôt
+  # Utilise le nom de ton dépôt (MehdiKaouache/TP4_Maintenance-Logiciel)
+  IMAGE_NAME: ${{ github.repository }} 
 
 jobs:
   build-and-push:
@@ -26,7 +27,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        [cite_start]run: mvn clean package -DskipTests [cite: 31]
+        run: mvn clean package -DskipTests
         working-directory: ./api
 
       - name: Log in to the Container registry
@@ -39,7 +40,5 @@ jobs:
       - name: Build and push Docker image (using short SHA as tag)
         run: |
           cd api
-          # Construire l'image [cite: 33]
           docker build -t ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD) .
-          # Pousser l'image [cite: 35]
           docker push ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)
