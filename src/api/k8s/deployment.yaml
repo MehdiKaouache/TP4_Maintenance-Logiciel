@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      volumes:
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: app-pvc
+      containers:
+        - name: api
+          image: ghcr.io/mehdikaouache/tp4_maintenance-logiciel:b051263
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: data-storage
+              mountPath: /data
