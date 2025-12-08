@@ -38,9 +38,8 @@ jobs:
       - name: Build and push Docker image
         run: |
           TAG=$(git rev-parse --short HEAD)
-          IMAGE_PATH=ghcr.io/${{ github.repository }}:$TAG
-          
-          # On construit l'image depuis le dossier src/api
+          REPO_NAME_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_PATH=ghcr.io/$REPO_NAME_LOWER:$TAG
+
           docker build -t $IMAGE_PATH ./src/api
-          
           docker push $IMAGE_PATH
