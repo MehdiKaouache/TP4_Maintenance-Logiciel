@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Correction Structure Src
+name: CI/CD Pipeline - Phase 1 Final
 
 on:
   push:
@@ -38,12 +38,8 @@ jobs:
       - name: Build and push Docker image
         run: |
           TAG=$(git rev-parse --short HEAD)
-          REPO_NAME_LOWER=${{ github.repository }}
-          REPO_NAME_LOWER=$(echo $REPO_NAME_LOWER | tr '[:upper:]' '[:lower:]')
-          
+          REPO_NAME_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           IMAGE_PATH=ghcr.io/$REPO_NAME_LOWER:$TAG
-          
-          echo "Pushez l'image vers: $IMAGE_PATH"
           
           docker build -t $IMAGE_PATH ./src/api
           
