@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-app
+  namespace: etudiant28-ns
 spec:
   replicas: 2
   selector:
@@ -23,10 +24,27 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: DB_PASSWORD
-          volumeMounts:
-            - name: data-storage
-              mountPath: /data
-      volumes:
-        - name: data-storage
-          persistentVolumeClaim:
-            claimName: app-pvc
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mariadb://localhost:3306/todo"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: "update"
+
+        - name: db-sidecar
+          image: mariadb:10.5
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
+            - name: MYSQL_DATABASE
+              value: todo
